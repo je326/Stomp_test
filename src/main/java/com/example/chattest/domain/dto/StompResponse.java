@@ -3,9 +3,11 @@ package com.example.chattest.domain.dto;
 import lombok.Getter;
 import lombok.Setter;
 
-@Setter
 @Getter
+@Setter
 public class StompResponse {
 
-    private String content;
+//    private String nickname;
+
+    private String Content;
 }
