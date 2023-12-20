@@ -2,8 +2,6 @@ package com.example.chattest;
 
 import com.example.chattest.domain.dto.StompRequest;
 import com.example.chattest.domain.dto.StompResponse;
-import com.example.chattest.service.ChatService;
-import com.example.chattest.service.SessionEventListener;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
@@ -17,17 +15,14 @@ import org.springframework.stereotype.Controller;
 public class ChatStompController {
 
     private final SimpMessagingTemplate simpMessagingTemplate;
-//    private final ChatService chatService;
-//    private final SessionEventListener sessionEventListener;
 
-    //사용자 입장
+    //사용자 입장 알림
     @MessageMapping("/chat/ENTER/{algorithmId}")
     public void enter(@DestinationVariable("algorithmId") Long algorithmId) {
         StompResponse response = new StompResponse();
         response.setContent("님이 입장하셨습니다.");
         simpMessagingTemplate.convertAndSend("/topic/chat/" + algorithmId, response);
 
-//        log.info("Enter member: {} to chatting room: {}", request.getSender(), algorithmId);
     }
 
     //사용자 채팅
@@ -36,19 +31,17 @@ public class ChatStompController {
         StompResponse response = new StompResponse();
         response.setContent(request.getContent());
         simpMessagingTemplate.convertAndSend("/topic/chat/" + algorithmId, response);
-        //채팅 DB에 저장
-//        chatService.saveChat(algorithmId, response);
+        //TODO - DB 저장 로직
 
-//        log.info("Message {} Enter member: {} to chatting room: {}", request.getContents(), request.getSender(), algorithmId);
     }
 
-    //사용자 퇴장
+    //사용자 퇴장 알림
     @MessageMapping("/chat/EXIT/{algorithmId}")
     public void exit(@DestinationVariable("algorithmId") Long algorithmId) {
         StompResponse response = new StompResponse();
         response.setContent("님이 퇴장하셨습니다.");
         simpMessagingTemplate.convertAndSend("/topic/chat/" + algorithmId, response);
 
-//        log.info("Exit member: {} to chatting room: {}", request.getSender(), algorithmId);
     }
 }
+
