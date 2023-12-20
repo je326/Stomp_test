@@ -18,6 +18,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/ws/chat").setAllowedOriginPatterns("http://localhost:8080")
                 .withSockJS();
+
+        registry.addEndpoint("/ws/chat/test").setAllowedOriginPatterns("http://localhost:8080");
     }
 
     /**

@@ -17,7 +17,7 @@ public class ChatStompController {
     private final SimpMessagingTemplate simpMessagingTemplate;
 
     //사용자 입장 알림
-    @MessageMapping("/chat/ENTER/{algorithmId}")
+    @MessageMapping("/chat/enter/{algorithmId}")
     public void enter(@DestinationVariable("algorithmId") Long algorithmId) {
         StompResponse response = new StompResponse();
         response.setContent("님이 입장하셨습니다.");
@@ -36,7 +36,7 @@ public class ChatStompController {
     }
 
     //사용자 퇴장 알림
-    @MessageMapping("/chat/EXIT/{algorithmId}")
+    @MessageMapping("/chat/exit/{algorithmId}")
     public void exit(@DestinationVariable("algorithmId") Long algorithmId) {
         StompResponse response = new StompResponse();
         response.setContent("님이 퇴장하셨습니다.");

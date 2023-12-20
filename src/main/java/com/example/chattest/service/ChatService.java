@@ -37,7 +37,7 @@ public class ChatService {
 
         Chat chat = Chat.builder()
                 .algorithm(optionalAlgorithm.get())
-                .nickname(chatResponse.getNickname())
+//                .nickname(chatResponse.getNickname())
                 .content(chatResponse.getContent())
                 .build();
 

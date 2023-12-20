@@ -104,30 +104,28 @@
     //화면에 메시지를 표시하는 함수
     function showMessage(data){
         if(data.sender===userId){
-            $('#chatting').append("<p class='me'>"+data.sender+" : "+data.contents+"</p>");
+            $('#chatting').append("<p class='me'>"+data.content+"</p>");
         } else {
-            $('#chatting').append("<p class='other'>"+data.sender+" : "+data.contents+"</p>");
+            $('#chatting').append("<p class='other'>"+data.content+"</p>");
         }
     }
-    function sendEnterMessage() {
-        stompClient.send("/app/chat", {}, JSON.stringify({
-            'type' : "ENTER",
-            'algorithmId' : 3,
-            'sender' : userId,
-            'contents': ''
-        }));
+
+    function sendEnterMessage(){
+        data = {
+            'content': $("#msg").val()
+        };
+        // send(destination,헤더,페이로드)
+        stompClient.send("/app/chat/enter/3", {}, JSON.stringify(data));
+        $("#msg").val('');
     }
 
     //메시지 브로커로 메시지 전송
     function send(){
         data = {
-            'type' : "MESSAGE",
-            'algorithmId' : 3,
-            'sender' :userId,
-            'contents': $("#msg").val()
+            'content': $("#msg").val()
         };
         // send(destination,헤더,페이로드)
-        stompClient.send("/app/chat", {}, JSON.stringify(data));
+        stompClient.send("/app/chat/3", {}, JSON.stringify(data));
         $("#msg").val('');
     }
 
