@@ -77,7 +77,7 @@
         stompClient = Stomp.over(socket);
 
         // connect(header,연결 성공시 콜백,에러발생시 콜백)
-        stompClient.connect({}, function () {
+        stompClient.connect({'nickname': userId}, function () {
                 //subscribe(subscribe url,해당 url로 메시지를 받을때마다 실행할 함수)
                 sub = stompClient.subscribe('/topic/chat/3', function (e) {
 
@@ -104,9 +104,9 @@
     //화면에 메시지를 표시하는 함수
     function showMessage(data){
         if(data.sender===userId){
-            $('#chatting').append("<p class='me'>"+data.content+"</p>");
+            $('#chatting').append("<p class='me'>" + data.content +"</p>");
         } else {
-            $('#chatting').append("<p class='other'>"+data.content+"</p>");
+            $('#chatting').append("<p class='other'>" + data.content+"</p>");
         }
     }
 

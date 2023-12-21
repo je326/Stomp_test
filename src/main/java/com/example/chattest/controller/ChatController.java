@@ -1,5 +1,6 @@
 package com.example.chattest.controller;
 
+import com.example.chattest.domain.dto.ChatApiResponse;
 import com.example.chattest.domain.dto.ChatResponse;
 import com.example.chattest.service.ChatService;
 import lombok.RequiredArgsConstructor;
@@ -24,64 +25,36 @@ public class ChatController {
     private final ChatService chatService;
 
     @GetMapping("/chat/{algorithmId}")
-    public ResponseEntity<?> getChatsByAlgorithmId(@PathVariable("algorithmId") Long algorithmId) {
+    public ChatApiResponse<?> getChatsByAlgorithmId(@PathVariable("algorithmId") Long algorithmId) {
+
         try {
-            List<ChatResponse> chats = chatService.getChatsByAlgorithmId(algorithmId);
-            return ResponseEntity.ok().body(Map.of(
-                    "statusCode", 200,
-                    "data", chats
-            ));
+            List<ChatResponse> chats = chatService.getChats(algorithmId);
+            return new ChatApiResponse<>(chats);
         } catch (NoSuchElementException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of(
-                    "statusCode", 4040,
-                    "message", "채팅 내역을 찾을 수 없습니다."
-            ));
+            return new ChatApiResponse<>(4040, e.getMessage());
         } catch (HttpMessageNotReadableException | MethodArgumentTypeMismatchException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of(
-                    "statusCode", 4006,
-                    "message", "요청이 잘못 되었습니다."
-            ));
+            return new ChatApiResponse<>(4006, e.getMessage());
         } catch (AccessDeniedException e) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of(
-                    "statusCode", 4036,
-                    "message", "요청이 서버에서 거부되었습니다."
-            ));
+            return new ChatApiResponse<>(4036, e.getMessage());
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
-                    "statusCode", 5006,
-                    "message", "서버에서 처리 중 오류가 발생했습니다."
-            ));
+            return new ChatApiResponse<>(5006, e.getMessage());
         }
     }
 
     @GetMapping("/chat/search/{algorithmId}")
-    public ResponseEntity<?> getChatsByKeyword(@PathVariable("algorithmId") Long algorithmId, @RequestParam("keyword") String keyword) {
+    public ChatApiResponse<?> getChatsByKeyword(@PathVariable("algorithmId") Long algorithmId, @RequestParam("keyword") String keyword) {
+
         try {
-            List<ChatResponse> chats = chatService.getChatsByKeyword(algorithmId, keyword);
-            return ResponseEntity.ok().body(Map.of(
-                    "statusCode", 200,
-                    "data", chats
-            ));
+            List<ChatResponse> chats = chatService.searchChats(algorithmId, keyword);
+            return new ChatApiResponse<>(chats);
         } catch (NoSuchElementException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of(
-                    "statusCode", 4040,
-                    "message", "해당 검색어을 찾을 수 없습니다."
-            ));
+            return new ChatApiResponse<>(4040, e.getMessage());
         } catch (HttpMessageNotReadableException | MethodArgumentTypeMismatchException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of(
-                    "statusCode", 4006,
-                    "message", "요청이 잘못 되었습니다."
-            ));
+            return new ChatApiResponse<>(4006, e.getMessage());
         } catch (AccessDeniedException e) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of(
-                    "statusCode", 4036,
-                    "message", "요청이 서버에서 거부되었습니다."
-            ));
+            return new ChatApiResponse<>(4036, e.getMessage());
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
-                    "statusCode", 5006,
-                    "message", "서버에서 처리 중 오류가 발생했습니다."
-            ));
+            return new ChatApiResponse<>(5006, e.getMessage());
         }
     }
 }

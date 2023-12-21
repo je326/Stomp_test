@@ -1,22 +1,20 @@
 package com.example.chattest.domain.dto;
 
-import lombok.*;
-
-import java.sql.Timestamp;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class StompResponse {
+public class StompNoticeResponse {
 
     private String type;
-
-    private Long chatId;
 
     private String nickname;
 
     private String content;
 
-    private Timestamp createAt;
 }
