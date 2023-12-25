@@ -22,10 +22,12 @@ public class UserSessionRegistry {
         userSessions.remove(sessionId);
     }
 
-    public void printSessions() {
-        for (String key : userSessions.keySet()) {
-            String value = userSessions.get(key).toString();
-            System.out.println(key + ":" + value);
+    public String getSessionId(String nickname) {
+        for (Map.Entry<String, String> entry : userSessions.entrySet()) {
+            if (entry.getValue().equals(nickname)) {
+                return entry.getKey();
+            }
         }
+        return null;
     }
 }

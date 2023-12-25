@@ -1,5 +1,6 @@
 package com.example.chattest;
 
+import com.example.chattest.domain.dto.ChatApiResponse;
 import com.example.chattest.domain.dto.StompNoticeResponse;
 import com.example.chattest.domain.dto.StompRequest;
 import com.example.chattest.domain.dto.StompResponse;
@@ -11,6 +12,7 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.NoSuchElementException;
 
@@ -57,25 +59,29 @@ public class ChatStompController {
         }
     }
 
-    //사용자 퇴장 알림
-    @MessageMapping("/chat/exit/{algorithmId}")
-    public void exit(@DestinationVariable("algorithmId") Long algorithmId, StompHeaderAccessor accessor) {
-
-        String sessionId = accessor.getSessionId();
-        String nickname = userSessionRegistry.getNickname(sessionId);
-
-        String content = nickname + " 님이 퇴장하셨습니다.";
+    /**
+     * 채팅 disconnect 시 퇴장 응답 보내고 유저 정보 지우기
+     */
+    @ResponseBody
+    @GetMapping("/chat/exit/{algorithmId}")
+    public ChatApiResponse<?> disconnectChat(@PathVariable("algorithmId") Long algorithmId, @RequestParam("nickname") String nickname) {
 
         StompNoticeResponse noticeResponse = StompNoticeResponse.builder()
                 .type("EXIT")
                 .nickname(nickname)
-                .content(content)
+                .content(nickname + " 님이 퇴장하셨습니다.")
                 .build();
 
+        try {
+            String sessionId = userSessionRegistry.getSessionId(nickname);
+            userSessionRegistry.removeUser(sessionId);
+        } catch (Exception e) {
+            log.info("해당 사용자를 찾을 수 없습니다.");
+        }
+
         simpMessagingTemplate.convertAndSend("/topic/chat/" + algorithmId, noticeResponse);
+        log.info("remove nickname={}", nickname);
 
-        userSessionRegistry.removeUser(sessionId);
+        return new ChatApiResponse<>(null);
     }
-
 }
-
